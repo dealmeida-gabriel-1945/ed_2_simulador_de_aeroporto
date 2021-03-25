@@ -88,7 +88,7 @@ public class ArquivoService {
                 }
             }
         }
-
+        grafo.getVoos().forEach(voo -> voo.calculaPesosRestantes(grafo.getAeroportos()));
         return grafo;
     }
 

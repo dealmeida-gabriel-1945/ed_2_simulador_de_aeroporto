@@ -1,7 +1,9 @@
 package data_shape;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Voo {
@@ -14,12 +16,18 @@ public class Voo {
     private String comida;
     private Integer paradas;
     private String tipo;
+    private Double distancia;
     private List<String> classes = new ArrayList<>();
 
     public String toString(){
+        return this.toString(Boolean.TRUE);
+    }
+    public String toString(Boolean quebra){
         StringBuilder sb = new StringBuilder();
 
-        sb.append("\n");
+        if (quebra){
+            sb.append("\n");
+        }
         sb.append(linhaAerea);
         sb.append(" ");
         sb.append(voo);
@@ -122,5 +130,25 @@ public class Voo {
 
     public List<String> getClasses() {
         return classes;
+    }
+
+    public Double getDistancia() {
+        return distancia;
+    }
+
+    public void setDistancia(Double distancia) {
+        this.distancia = distancia;
+    }
+
+    public void calculaPesosRestantes(HashMap<String, Aeroporto> aeroportos) {
+        if(
+            Objects.isNull(aeroportoOrigem)
+            || Objects.isNull(aeroportoDestino)
+        ) return;
+
+        distancia = Math.sqrt(
+                Math.pow(aeroportos.get(aeroportoDestino).getCoordenadaX() - aeroportos.get(aeroportoOrigem).getCoordenadaX(), 2) +
+                Math.pow(aeroportos.get(aeroportoDestino).getCoordenadaY() - aeroportos.get(aeroportoOrigem).getCoordenadaY(), 2)
+        );
     }
 }

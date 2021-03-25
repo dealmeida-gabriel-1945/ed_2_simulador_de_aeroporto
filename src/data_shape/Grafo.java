@@ -62,5 +62,9 @@ public class Grafo {
         this.voos = voos;
     }
 
+    public void mostraAeroportos(){
+        aeroportos.forEach((s, aeroporto) -> System.out.println(s));
+    }
+
 
 }

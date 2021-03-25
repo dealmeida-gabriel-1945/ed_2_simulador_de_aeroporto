@@ -52,4 +52,40 @@ public class Aeroporto {
     public void setDestinos(HashMap<String, Aeroporto> destinos) {
         this.destinos = destinos;
     }
+
+    public void setAbreviacao(String abreviacao) {
+        this.abreviacao = abreviacao;
+    }
+
+    public String getTimezone() {
+        return timezone;
+    }
+
+    public void setTimezone(String timezone) {
+        this.timezone = timezone;
+    }
+
+    public Long getCoordenadaX() {
+        return coordenadaX;
+    }
+
+    public void setCoordenadaX(Long coordenadaX) {
+        this.coordenadaX = coordenadaX;
+    }
+
+    public Long getCoordenadaY() {
+        return coordenadaY;
+    }
+
+    public void setCoordenadaY(Long coordenadaY) {
+        this.coordenadaY = coordenadaY;
+    }
+
+    public String getLocal() {
+        return local;
+    }
+
+    public void setLocal(String local) {
+        this.local = local;
+    }
 }
