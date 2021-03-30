@@ -36,6 +36,8 @@ public class Main {
             System.out.println("3. mostrar, a partir de um aeroporto definido, quais os voos diretos (sem escalas e/ou conexões) que partem dele e a lista desses destinos;");
             System.out.println("4. menor rota entre dois aeroportos;");
             System.out.println("5. possui aeroporto ilhado;");
+            System.out.println("6. menor caminho passando por todos os aeroportos;");
+            System.out.println("0. Sair.");
             System.out.print("Resposta: ");
             esc = ler.nextInt();
             switch (esc){
@@ -55,23 +57,39 @@ public class Main {
                     possuiAeroportosInacessiveis(grafo);
                     break;
                 case 6://5.F
+                    passaPorTodosAeroportos(grafo, ler);
+                    break;
+                case 0://5.F
+                    System.out.println("Bye!");
                     break;
                 default:
                     ErrosService.ERRO_OPCAO_INVALIDA();
                     break;
             }
+            if (esc == 0) return;
         }
 
     }
 
+    private static void passaPorTodosAeroportos(Grafo grafo, Scanner ler) {
+        if (GrafoService.possuiAeroportosInacessiveis(grafo)){
+            System.out.println("Não há como traçar o caminho pois o grafo possui aeroportos inacessíveis.");
+            return;
+        }
+        grafo.mostraAeroportos();
+        String origem = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
+        Optional<List<Aeroporto>> opt = Optional.ofNullable(GrafoService.caminhoPorTodosAeroportos(grafo, origem));
+        if (!opt.isPresent()) System.out.println("Impossível calcular!");
+        opt.get().forEach(aeroporto -> System.out.println(aeroporto.getAbreviacao()));
+    }
+
     private static void menorRota(Grafo grafo, Scanner ler) {
-//        grafo.mostraAeroportos();
-//        String origem = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
-//        String destino = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
-//        GrafoService.procuraMenorCaminho(grafo, grafo.getAeroportos().get(origem), grafo.getAeroportos().get(destino))
-//            .forEach(aeroporto -> System.out.println(aeroporto.toString()));
-        Optional.ofNullable(GrafoService.procuraMenorCaminho(grafo, grafo.getAeroportos().get("AU1"), grafo.getAeroportos().get("AU3")))
-            .ifPresent(aeroportos -> aeroportos.forEach(aeroporto -> System.out.println(aeroporto.getAbreviacao())));
+        grafo.mostraAeroportos();
+        String origem = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
+        String destino = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
+        Optional<List<Aeroporto>> opt = Optional.ofNullable(GrafoService.procuraMenorCaminho(grafo, grafo.getAeroportos().get(origem), grafo.getAeroportos().get(destino)));
+        if (!opt.isPresent()) System.out.println("Impossível calcular!");
+        opt.get().forEach(aeroporto -> System.out.println(aeroporto.getAbreviacao()));
     }
 
     private static void possuiAeroportosInacessiveis(Grafo grafo) {
