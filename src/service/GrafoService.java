@@ -61,4 +61,85 @@ public class GrafoService {
         }
         return ae.getAbreviacao();
     }
+
+    public static Boolean possuiAeroportosInacessiveis(Grafo grafo) {
+        List<Boolean> allVisitados = new ArrayList<>();
+        grafo.getAeroportos()
+            .forEach((s, aeroporto) -> {
+                allVisitados.add(chegaATodos(aeroporto, grafo.getAeroportos()));
+            });
+        return allVisitados.stream().anyMatch(i -> !i);
+    }
+
+    private static Boolean chegaATodos(Aeroporto aeroporto, HashMap<String, Aeroporto> aeroportos){
+        List<String> visitados = new ArrayList<>();
+        aeroporto.getDestinos()
+            .forEach((s, destino) -> visita(visitados, destino));
+        if(aeroporto.getAbreviacao().equals("JOJ")){
+            int ia = 0;
+        }
+        return aeroportos.keySet().containsAll(visitados) && !visitados.isEmpty();
+    }
+
+    private static void visita(List<String> visitados, Aeroporto atual){
+        visitados.add(atual.getAbreviacao());
+        atual.getDestinos()
+            .forEach((s, destino) -> {
+                if(!visitados.contains(s)){
+                    visita(visitados, destino);
+                }
+            });
+    }
+
+    public static List<Aeroporto> procuraMenorCaminho(Grafo grafo, Aeroporto origem, Aeroporto destino) {
+        HashMap<String, Boolean> visitados = new HashMap<>();
+        grafo.getAeroportos().forEach((s, aeroporto) -> visitados.put(s, Boolean.FALSE));//seta todos como não visitados
+        return menorCaminho(origem, destino, new ArrayList<>(), visitados);
+    }
+
+    private static List<Aeroporto> menorCaminho(Aeroporto atual, Aeroporto destino, List<Aeroporto> menorCaminho, HashMap<String, Boolean> visitados){
+
+        menorCaminho.add(atual);
+        HashMap<String, Boolean> visitadosCpy = new HashMap<>(visitados);
+        if(Objects.equals(atual.getAbreviacao(), destino.getAbreviacao())){
+            return menorCaminho;
+        }
+        if(visitadosCpy.get(atual.getAbreviacao())){
+            return menorCaminho;
+        }else {
+            visitadosCpy.put(atual.getAbreviacao(), Boolean.TRUE);
+        }
+
+        List<List<Aeroporto>> caminhos = new ArrayList<>();
+        atual.getDestinos().forEach(
+                (s, aeroporto) -> {
+                    visitadosCpy.clear();
+                    visitadosCpy.putAll(visitados);
+                    Optional.ofNullable(menorCaminho(aeroporto, destino, new ArrayList<>(), visitadosCpy)).ifPresent(l -> {
+                        if (!l.isEmpty() && Objects.equals(l.get(l.size() - 1).getAbreviacao(), destino.getAbreviacao())) {
+                            caminhos.add(l);
+                        }
+                    });
+                }
+        );
+        List<Double> totais = new ArrayList<>();
+        if(atual.getAbreviacao().equals("AU1")){
+            int j = 0;
+        }
+        for (List<Aeroporto> aeroportos : caminhos) {
+            Double distancia = 0d;
+            for (int i = 1; i < aeroportos.size(); i++) {
+                distancia += AeroportoService.calculaDistanciaEntreAeroportos(aeroportos.get(i - 1), aeroportos.get(i));
+            }
+            totais.add(distancia);
+        }
+        if(caminhos.isEmpty()){
+            return null;
+        }else{
+            List<Aeroporto> aux = new ArrayList<>();
+            aux.add(atual);
+            aux.addAll(caminhos.get(totais.indexOf(totais.stream().mapToDouble(i -> i).min().getAsDouble())));
+            return aux;
+        }
+    }
 }

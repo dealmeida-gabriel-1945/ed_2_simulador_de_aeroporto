@@ -8,6 +8,7 @@ import util.constants.ExemploConstants;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -33,6 +34,9 @@ public class Main {
             System.out.println("1. Mostrar possibilidade de voos dado dois aeroportos;");
             System.out.println("2. dado um voo e mostrar a rota possível para o mesmo;");
             System.out.println("3. mostrar, a partir de um aeroporto definido, quais os voos diretos (sem escalas e/ou conexões) que partem dele e a lista desses destinos;");
+            System.out.println("4. menor rota entre dois aeroportos;");
+            System.out.println("5. possui aeroporto ilhado;");
+            System.out.print("Resposta: ");
             esc = ler.nextInt();
             switch (esc){
                 case 1://5.A
@@ -45,8 +49,10 @@ public class Main {
                     voosSemConexaoOuEscala(grafo, ler);
                     break;
                 case 4://5.D
+                    menorRota(grafo, ler);
                     break;
                 case 5://5.E
+                    possuiAeroportosInacessiveis(grafo);
                     break;
                 case 6://5.F
                     break;
@@ -56,6 +62,24 @@ public class Main {
             }
         }
 
+    }
+
+    private static void menorRota(Grafo grafo, Scanner ler) {
+//        grafo.mostraAeroportos();
+//        String origem = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
+//        String destino = GrafoService.SELECIONA_AEROPORTO(grafo, ler);
+//        GrafoService.procuraMenorCaminho(grafo, grafo.getAeroportos().get(origem), grafo.getAeroportos().get(destino))
+//            .forEach(aeroporto -> System.out.println(aeroporto.toString()));
+        Optional.ofNullable(GrafoService.procuraMenorCaminho(grafo, grafo.getAeroportos().get("AU1"), grafo.getAeroportos().get("AU3")))
+            .ifPresent(aeroportos -> aeroportos.forEach(aeroporto -> System.out.println(aeroporto.getAbreviacao())));
+    }
+
+    private static void possuiAeroportosInacessiveis(Grafo grafo) {
+        System.out.println("\nO grafo " + (
+            GrafoService.possuiAeroportosInacessiveis(grafo)
+                ? ""
+                : "não "
+        ) + "possui aeroportos que não conseguem chegar a qualquer outro.");
     }
 
     private static void voosSemConexaoOuEscala(Grafo grafo, Scanner ler) {
